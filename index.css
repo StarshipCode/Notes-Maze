@@ -1,7 +1,57 @@
+* {
+    margin: 0px;
+}
+
 body {
     background-color: black;
     overflow: hidden;
 }
+
+.static-effect {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    overflow: hidden;
+    opacity: 0;
+}
+
+.static-effect::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url("ruta/a/tu/imagen.png");
+    z-index: 1;
+}
+
+.static-effect::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url("./textures/static.jpg");
+    animation: static 2s infinite;
+    z-index: 2;
+    opacity: 0.5;
+}
+
+@keyframes static {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(5px, -5px);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+
+
 
 #canvas {
     background-color: black;
@@ -17,28 +67,28 @@ body {
     z-index: 1000;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(80, 90, 40, 0.5);
+    background-color: rgba(231, 97, 97, 0.5);
     user-select: none;
 
 }
+
 .init::after {
     content: "Click to start";
     display: block;
     margin: 0 auto;
     color: white;
-    background-color: grey;
-
+    background-color: #232323;
 
     padding: 1rem 2rem 2rem;
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     width: 20%;
-    height: 3rem;
-    border-radius: 1rem;
+    height: 0.7rem;
+    border-radius: 5px;
     overflow-y: hidden;
 }
 
-.init > p {
+.init>p {
     color: white;
     background-color: rgb(35, 35, 35);
     display: block;
@@ -49,7 +99,7 @@ body {
     font-size: 1rem;
     width: 70vw;
     height: 5rem;
-    border-radius: 1rem;
+    border-radius: 3px;
     overflow-y: scroll;
 
 

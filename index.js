@@ -1,14 +1,19 @@
 //Made by StarshipCode
-let startTime = new Date().getTime()
+
+//Pause game
+let pause = true
+//Gui element
 const gui = document.getElementById("gui")
+const static = document.getElementById("static")
+//Audio elements
 const audio = document.getElementById("audio")
 const audio2 = document.getElementById("audio2")
 const audio3 = document.getElementById("audio3")
-
-// alert("Read this carefully! You have to get all the notes in this maze, but it can't be so easy...right? Move with Arrows and interact with F.")
+//Setting audios configurations
 audio.muted = true
 audio.src = "music-box.mp3"
 audio.muted = false
+
 //Canvas and graphic context
 const canvas = document.getElementById("canvas")
 const ctx = canvas.getContext("2d", { alpha: true })
@@ -30,7 +35,9 @@ let angleSpeed = 5
 let flashlight = true
 //Render the blocks or map view
 let render = true
+//Text wich shows when pointing something
 let showTakeNote = ""
+//Block wich player is pointing
 let blockSpotted = { x: 0, y: 0 }
 //Notes
 let notes = 0
@@ -66,6 +73,7 @@ const map = [
     [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1],
 ]
+//Total number of notes in map
 let totalNotes = 0
 for (let i = 0; i < map.length; i++) {
     for (let x = 0; x < map[i].length; x++) {
@@ -88,9 +96,11 @@ let skyTexture = new Image()
 skyTexture.src = "textures/sky.jpg"
 
 let skyX = 0
-//Enemy
+
+//Enemies
 const enemy = { x: canvas.width / 2, y: canvas.height / 2, angle: 0 }
 const enemy2 = { x: canvas.width / 2, y: canvas.height / 2, angle: 0 }
+//Draw the map only when redering == false
 function drawMap() {
     ctx.fillStyle = "#333"
     for (let x = 0; x < map[0].length; x++) {
@@ -409,92 +419,107 @@ let enemyTime = new Date().getTime()
 let enemyTime2 = new Date().getTime()
 let enemyActivation = false
 function draw() {
-    //Clear display
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    //Draw sky and floor
-    ctx.drawImage(skyTexture, skyX, 0, 700, 350, 0, 0, canvas.width, canvas.height / 2)
-    ctx.fillStyle = FLOOR_COLOR
-    ctx.fillRect(0, canvas.height / 2, canvas.width, canvas.height / 2)
-    //Draw map
-    if (!render)
-        drawMap()
-    //Draw player
-    player.draw()
-    //GUI elements
-    ctx.fillStyle = "#fff"
-    ctx.font = "20px arial"
-    gui.innerHTML = "Notes " + notes + "/" + totalNotes
-
-    ctx.fillStyle = "#fff"
-    ctx.font = "20px arial"
-    ctx.fillText(showTakeNote, canvas.width / 2, canvas.height / 2 - 10, 200)
-    //Center
-    ctx.beginPath()
-    ctx.fillStyle = "#fff"
-    ctx.arc(canvas.width / 2, canvas.height / 2, 5, 0, Math.PI * 2)
-    ctx.fill()
-    ctx.closePath()
-    //Drawing enemy
-    if (!render) {
+    if (!pause) {
+        //Clear display
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        //Draw sky and floor
+        ctx.drawImage(skyTexture, skyX, 0, 700, 350, 0, 0, canvas.width, canvas.height / 2)
+        ctx.fillStyle = FLOOR_COLOR
+        ctx.fillRect(0, canvas.height / 2, canvas.width, canvas.height / 2)
+        //Draw map
+        if (!render)
+            drawMap()
+        //Draw player
+        player.draw()
+        //GUI elements
         ctx.fillStyle = "#fff"
+        ctx.font = "20px arial"
+        gui.innerHTML = "Notes " + notes + "/" + totalNotes
+
+        ctx.fillStyle = "#fff"
+        ctx.font = "20px arial"
+        ctx.fillText(showTakeNote, canvas.width / 2, canvas.height / 2 - 10, 200)
+        //Center
         ctx.beginPath()
-        ctx.arc(enemy.x, enemy.y, 5, 0, Math.PI * 2)
+        ctx.fillStyle = "#fff"
+        ctx.arc(canvas.width / 2, canvas.height / 2, 5, 0, Math.PI * 2)
         ctx.fill()
         ctx.closePath()
-    }
-    //Enemy behavior
-    let baseGlitchTime = 0
-    let baseGlitchRandom = 10000
-    let distance = Math.sqrt(Math.pow(player.x - enemy.x, 2) + Math.pow(player.y - enemy.y, 2))
-    let distance2 = Math.sqrt(Math.pow(player.x - enemy2.x, 2) + Math.pow(player.y - enemy2.y, 2))
-    if ((distance < 80 && distance > 40) || (distance2 < 80 && distance2 > 40)) {
-        baseGlitchTime = 20000
-        baseGlitchRandom = 3000
-        audio2.muted = false
-        audio2.play()
-    }
-    else if (distance < 40 || distance2 < 40) {
-        audio2.muted = true
-        audio3.play()
-        alert("You have been caught by something!")
-        location.reload()
-    }
-    else {
-        audio2.muted = true
-    }
-    let enemySpeed = 0.7 //Nice one is 0.7
-    enemy.x += Math.cos(enemy.angle) * enemySpeed
-    enemy.y += Math.sin(enemy.angle) * enemySpeed
-    if (new Date().getTime() - enemyTime > 5000 || enemy.x > 700 - enemySpeed || enemy.x < 0 + enemySpeed || enemy.y >= 700 - enemySpeed || enemy.y < 0 + enemySpeed) {
-        enemy.angle = Math.floor(Math.random() * Math.PI * 2)
-        enemyTime = new Date().getTime()
-    }
-    if (enemyActivation == false && new Date().getTime() - enemyTime2 >= 15000) {
-        enemyActivation = true
-    }
-    if (enemyActivation) {
-        enemy2.x += Math.cos(enemy2.angle) * enemySpeed
-        enemy2.y += Math.sin(enemy2.angle) * enemySpeed
-        if (new Date().getTime() - enemyTime2 > 5000 || enemy2.x > 700 - enemySpeed || enemy2.x < 0 + enemySpeed || enemy2.y >= 700 - enemySpeed || enemy2.y < 0 + enemySpeed) {
-            enemy2.angle = Math.floor(Math.random() * Math.PI * 2)
-            enemyTime2 = new Date().getTime()
+        //Drawing enemy
+        if (!render) {
+            ctx.fillStyle = "#fff"
+            ctx.beginPath()
+            ctx.arc(enemy.x, enemy.y, 5, 0, Math.PI * 2)
+            ctx.fill()
+            ctx.closePath()
+        }
+        //Enemy behavior
+        const enemyAdviceDistance = 100
+        const enemyAttackDistance = 45
+        let baseGlitchTime = 0
+        let baseGlitchRandom = 10000
+        //Distances from player to enemmies
+        let distance = Math.sqrt(Math.pow(player.x - enemy.x, 2) + Math.pow(player.y - enemy.y, 2))
+        let distance2 = Math.sqrt(Math.pow(player.x - enemy2.x, 2) + Math.pow(player.y - enemy2.y, 2))
+        //According to distance reproduce sound or lose
+        let opacityDistance = distance < distance2 ? distance : distance2
+        static.style.opacity = 0.8 - opacityDistance / 100
+        if ((distance < enemyAdviceDistance && distance > enemyAttackDistance) || (distance2 < enemyAdviceDistance && distance2 > enemyAttackDistance)) {
+            baseGlitchTime = 20000
+            baseGlitchRandom = 3000
+            audio2.muted = false
+            audio2.play()
+        }
+        else if (distance < enemyAttackDistance || distance2 < enemyAttackDistance) {
+            audio2.muted = true
+            audio3.play()
+            alert("You have been caught by something!")
+            location.reload()
+        }
+        else {
+            audio2.muted = true
+        }
+        //Enemy speed
+        let enemySpeed = 0.7 // 0.7 and 0.6 recommended
+        //Moving enemy
+        enemy.x += Math.cos(enemy.angle) * enemySpeed
+        enemy.y += Math.sin(enemy.angle) * enemySpeed
+        //Changing enemy angle after 5s or by bouncing on maps borders
+        if (new Date().getTime() - enemyTime > 5000 || enemy.x > 700 - enemySpeed || enemy.x < 0 + enemySpeed || enemy.y >= 700 - enemySpeed || enemy.y < 0 + enemySpeed) {
+            enemy.angle = Math.floor(Math.random() * Math.PI * 2)
+            enemyTime = new Date().getTime()
+        }
+        //Activate enemy 2 after 15s
+        if (enemyActivation == false && new Date().getTime() - enemyTime2 >= 15000) {
+            enemyActivation = true
+        }
+        //Behavior of enemy 2
+        if (enemyActivation) {
+            enemy2.x += Math.cos(enemy2.angle) * enemySpeed
+            enemy2.y += Math.sin(enemy2.angle) * enemySpeed
+            if (new Date().getTime() - enemyTime2 > 5000 || enemy2.x > 700 - enemySpeed || enemy2.x < 0 + enemySpeed || enemy2.y >= 700 - enemySpeed || enemy2.y < 0 + enemySpeed) {
+                enemy2.angle = Math.floor(Math.random() * Math.PI * 2)
+                enemyTime2 = new Date().getTime()
+            }
+        }
+        //Light Glitch using random time between 20s and 30s excepting when enemies near
+        if (new Date().getTime() - lightGlitchTime > Math.floor(Math.random() * baseGlitchRandom) + 20000 - baseGlitchTime) {
+            //Reseting glitch time
+            lightGlitchTime = new Date().getTime()
+            //Setting all in black
+            gui.style.background = "black"
+            //Glitch effect
+            setTimeout(() => {
+                gui.style.background = "transparent"
+            }, 300)
+            setTimeout(() => {
+                gui.style.background = "black"
+            }, 400)
+            setTimeout(() => {
+                gui.style.background = "transparent"
+            }, 500)
         }
     }
-    if (new Date().getTime() - lightGlitchTime > Math.floor(Math.random() * baseGlitchRandom) + 20000 - baseGlitchTime) {
-        lightGlitchTime = new Date().getTime()
-        gui.style.background = "black"
-        setTimeout(() => {
-            gui.style.background = "transparent"
-        }, 300)
-        setTimeout(() => {
-            gui.style.background = "black"
-        }, 400)
-        setTimeout(() => {
-            gui.style.background = "transparent"
-        }, 500)
-    }
-
-    //Mouse movement
     requestAnimationFrame(draw)
 }
 
@@ -510,56 +535,61 @@ const K_F = 70
 
 // Music event
 const initGame = document.querySelector(".init")
-initGame.addEventListener("click", (e)=>{
-    document.body.removeChild(e.target) 
+initGame.addEventListener("click", (e) => {
+    document.body.removeChild(e.target)
     audio.setAttribute("autoplay", true);
     audio.setAttribute("loop", true);
+    pause = false
 })
 
 //Keyboard events
 document.addEventListener("keydown", e => {
-    let x = 0
-    let y = 0
-    switch (e.keyCode) {
-        case K_LEFT:
-            player.left = true
-            break;
-        case K_RIGHT:
-            player.right = true
-            break
-        case K_UP:
-            player.up = true
-            break;
-        case K_DOWN:
-            player.down = true
-            break;
-        case K_F:
-            if (showTakeNote == "Press F to take the note.") {
-                map[blockSpotted.y][blockSpotted.x] = 1
-                notes++
-            }
-            if (notes == totalNotes) {
-                alert("Has ganado!")
-                location.reload()
-            }
-            break;
+    if (!pause) {
+        let x = 0
+        let y = 0
+        switch (e.keyCode) {
+            case K_LEFT:
+                player.left = true
+                break;
+            case K_RIGHT:
+                player.right = true
+                break
+            case K_UP:
+                player.up = true
+                break;
+            case K_DOWN:
+                player.down = true
+                break;
+            case K_F:
+                if (showTakeNote == "Press F to take the note.") {
+                    map[blockSpotted.y][blockSpotted.x] = 1
+                    notes++
+                }
+                if (notes == totalNotes) {
+                    alert("Has ganado!")
+                    location.reload()
+                }
+                break;
+        }
     }
 })
 
 document.addEventListener("keyup", e => {
-    switch (e.keyCode) {
-        case K_LEFT:
-            player.left = false
-            break;
-        case K_RIGHT:
-            player.right = false
-            break;
-        case K_UP:
-            player.up = false
-            break
-        case K_DOWN:
-            player.down = false
-            break;
+    if (!pause) {
+        switch (e.keyCode) {
+            case K_LEFT:
+                player.left = false
+                break;
+            case K_RIGHT:
+                player.right = false
+                break;
+            case K_UP:
+                player.up = false
+                break
+            case K_DOWN:
+                player.down = false
+                break;
+        }
     }
 })
 document.addEventListener("mousemove", e => {
