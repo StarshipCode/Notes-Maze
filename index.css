@@ -1,0 +1,47 @@
+body {
+    background-color: black;
+}
+
+#canvas {
+    background-color: black;
+    border-radius: 3px;
+    display: block;
+    margin: auto;
+    opacity: 0.45;
+}
+
+.container {
+    width: 700px;
+    height: 700px;
+    margin: auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.light {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle closest-side, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.9) 100%);
+    mix-blend-mode: multiply;
+    pointer-events: none;
+
+}
+
+#gui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: #fff;
+    font-size: 20px;
+    padding-left: 10px;
+    text-align: center;
+    padding-top: 20px;
+}
