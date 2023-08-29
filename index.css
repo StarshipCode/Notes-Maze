@@ -1,5 +1,6 @@
 body {
     background-color: black;
+    overflow: hidden;
 }
 
 #canvas {
@@ -8,6 +9,50 @@ body {
     display: block;
     margin: auto;
     opacity: 0.45;
+}
+
+.init {
+    display: block;
+    position: absolute;
+    z-index: 1000;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(80, 90, 40, 0.5);
+    user-select: none;
+
+}
+.init::after {
+    content: "Click to start";
+    display: block;
+    margin: 0 auto;
+    color: white;
+    background-color: grey;
+
+
+    padding: 1rem 2rem 2rem;
+    text-align: center;
+    font-size: 1.5rem;
+    width: 20%;
+    height: 3rem;
+    border-radius: 1rem;
+    overflow-y: hidden;
+}
+
+.init > p {
+    color: white;
+    background-color: rgb(35, 35, 35);
+    display: block;
+    margin: 10vh auto;
+
+    padding: 2rem;
+    text-align: center;
+    font-size: 1rem;
+    width: 70vw;
+    height: 5rem;
+    border-radius: 1rem;
+    overflow-y: scroll;
+
+
 }
 
 .container {

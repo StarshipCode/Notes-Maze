@@ -5,7 +5,7 @@ const audio = document.getElementById("audio")
 const audio2 = document.getElementById("audio2")
 const audio3 = document.getElementById("audio3")
 
-alert("Read this carefully! You have to get all the notes in this maze, but it can't be so easy...right? Move with Arrows and interact with F.")
+// alert("Read this carefully! You have to get all the notes in this maze, but it can't be so easy...right? Move with Arrows and interact with F.")
 audio.muted = true
 audio.src = "music-box.mp3"
 audio.muted = false
@@ -457,7 +457,7 @@ function draw() {
         audio2.muted = true
         audio3.play()
         alert("You have been caught by something!")
-        location.reaload()
+        location.reload()
     }
     else {
         audio2.muted = true
@@ -500,12 +500,22 @@ function draw() {
 
 player.start()
 draw()
+
 //Keys
 const K_LEFT = 37
 const K_RIGHT = 39
 const K_UP = 38
 const K_DOWN = 40
 const K_F = 70
+
+// Music event
+const initGame = document.querySelector(".init")
+initGame.addEventListener("click", (e)=>{
+    document.body.removeChild(e.target) 
+    audio.setAttribute("autoplay", true);
+    audio.setAttribute("loop", true);
+})
+
 //Keyboard events
 document.addEventListener("keydown", e => {
     let x = 0
